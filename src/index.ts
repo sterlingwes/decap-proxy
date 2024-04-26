@@ -51,7 +51,7 @@ const callbackScriptResponse = (status: string, token: string) => {
 		window.opener.postMessage("authorizing:github", "*");
 	</script>
 	<body>
-		<p>Authorizing yolo...</p>
+		<p>Authorizing Decap...</p>
 	</body>
 </head>
 </html>
