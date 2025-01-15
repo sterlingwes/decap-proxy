@@ -12,6 +12,19 @@ You'll need to [configure a Github OAuth application](https://github.com/setting
 
 Save the OAuth client ID and secret for later, you'll need to provide those secrets to the worker.
 
+If your GitHub repo (where you want Decap CMS to push content to) is private, you will have to change the scope in `index.ts` to:
+```typescript
+scope: 'repo,user'
+```
+So, your code after the change should look like:
+```typescript
+const authorizationUri = oauth2.authorizeURL({
+  redirect_uri: `https://${url.hostname}/callback?provider=github`,
+  scope: 'repo,user',
+  state: randomBytes(4).toString('hex'),
+});
+```
+
 ### Configure & Deploy the Worker
 
 Clone the repo and `cp wrangler.toml.sample wrangler.toml`.
