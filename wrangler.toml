@@ -14,6 +14,7 @@ route = { pattern = "decap.mnz.sk", zone_name = "mnz.sk" }
 # - https://developers.cloudflare.com/workers/configuration/secrets/
 # [vars]
 # MY_VARIABLE = "production_value"
+#
 
 # Bind the Workers AI model catalog. Run machine learning models, powered by serverless GPUs, on Cloudflare’s global network
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#workers-ai
