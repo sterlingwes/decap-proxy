@@ -8,7 +8,7 @@ This proxy is intended to be deployed on its own subdomain, separate from whatev
 
 ### Create a Github OAuth App
 
-You'll need to [configure a Github OAuth application](https://github.com/settings/applications/new). Your `Application callback URL` must be the domain you deploy your worker to with the `/callback` path. Based on the sample configuration below, that would mean `https://my.domain.com/callback`.
+You'll need to [configure a Github OAuth application](https://github.com/settings/applications/new). Your `Application callback URL` must be the domain you deploy your worker to with the `/callback` path. Based on the sample configuration below, that would mean `https://decap.mydomain.com/callback`.
 
 Save the OAuth client ID and secret for later, you'll need to provide those secrets to the worker.
 
@@ -29,9 +29,9 @@ const authorizationUri = oauth2.authorizeURL({
 
 Clone the repo and `cp wrangler.toml.sample wrangler.toml`.
 
-Configure / login with wrangler (`yarn global add wrangler && wrangler login`).
+Configure / login with wrangler (`npx wrangler login`).
 
-Deploy after tweaking your wrangler.toml as needed (`yarn deploy`).
+Deploy after tweaking your wrangler.toml as needed (`npx wrangler deploy`).
 
 Note that you'll likely want to make the following change to your wrangler.toml:
 
@@ -42,16 +42,23 @@ compatibility_date = "2024-04-19"
 compatibility_flags = ["nodejs_compat"]
 
 +workers_dev = false
-+route = { pattern = "my.domain.com", zone_name = "my.domain" }
++route = { pattern = "decap.mydomain.com", zone_name = "mydomain.com", custom_domain = true }
 ```
 
-Where `zone_name` is a domain you already host on cloudflare for DNS, and `pattern` is the subdomain you've chosen (if different). You'll also likely need to login to the Cloudflare admin site and configure the custom domain for your worker so that the DNS record is added (nested under: `Workers & Pages` > `Your Worker (decap-proxy)` > `Settings` > `Triggers` > `Add Custom Domain`).
+Where `zone_name` is a domain you already host on cloudflare for DNS, and `pattern` is the subdomain you've chosen (if different).
 
 Disabling `workers_dev` is how you disable the default workers.dev preview domain, if that's something you want.
 
 #### Configure OAuth Secrets
 
-Using the OAuth application credentials you saved from the first section, you'll enter these as `GITHUB_OAUTH_ID` and `GITHUB_OAUTH_SECRET` secret values for your worker (nested under: `Workers & Pages` > `Your Worker (decap-proxy)` > `Settings` > `Variables` > `Edit Variables` and set them to be **encrypted**).
+Using the OAuth application credentials you saved from the first section, you'll enter these as `GITHUB_OAUTH_ID` and `GITHUB_OAUTH_SECRET` secret values for your worker (nested under: `Compute (Workers) > Workers & Pages` > `Your Worker (decap-proxy)` > `Settings` > `Variables and Secrets` > `+ Add` and change the type to **Secret**).
+
+Alternatively, you can also add secrets via Wrangler:
+
+```bash
+npx wrangler secret put GITHUB_OAUTH_ID
+npx wrangler secret put GITHUB_OAUTH_SECRET
+```
 
 ### Point to Proxy in Decap Config
 
