@@ -165,9 +165,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.\*
-
+yarn.lock
 # wrangler project
-
+vitest.config.ts
 .dev.vars
 .wrangler/
 /wrangler.toml
