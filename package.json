@@ -1,5 +1,5 @@
 {
-	"name": "decap-proxy",
+	"name": "dumb-proxy",
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
