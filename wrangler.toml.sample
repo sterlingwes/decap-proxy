@@ -1,11 +1,12 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "decap-proxy"
 main = "src/index.ts"
-compatibility_date = "2024-04-19"
-# optional: this worker uses Web Crypto API natively and doesn't require nodejs_compat
-# you can remove this flag for improved security (avoids Node.js polyfill vulnerabilities)
-# it's kept here for users who may want to extend the worker with other Node.js APIs
-compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2025-11-17"
+
+# optional: this worker template uses Web Crypto API natively and doesn't require
+# nodejs_compat you can add this flag if you need Node.js polyfills,
+# but please be aware that those polyfills may have vulnerabilities
+# compatibility_flags = ["nodejs_compat"]
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Docs:

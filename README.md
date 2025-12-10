@@ -13,15 +13,18 @@ You'll need to [configure a Github OAuth application](https://github.com/setting
 Save the OAuth client ID and secret for later, you'll need to provide those secrets to the worker.
 
 If your GitHub repo (where you want Decap CMS to push content to) is private, you will have to change the scope in `index.ts` to:
+
 ```typescript
-scope: 'repo,user'
+scope: 'repo,user';
 ```
+
 So, your code after the change should look like:
+
 ```typescript
 const authorizationUri = oauth2.authorizeURL({
-  redirect_uri: `https://${url.hostname}/callback?provider=github`,
-  scope: 'repo,user',
-  state: randomHex(4),
+	redirect_uri: `https://${url.hostname}/callback?provider=github`,
+	scope: 'repo,user',
+	state: randomHex(4),
 });
 ```
 
@@ -38,27 +41,13 @@ Note that you'll likely want to make the following change to your wrangler.toml:
 ```diff
 name = "decap-proxy"
 main = "src/index.ts"
-compatibility_date = "2024-04-19"
-compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2025-11-17"
 
 +workers_dev = false
 +route = { pattern = "decap.mydomain.com", zone_name = "mydomain.com", custom_domain = true }
 ```
 
 Where `zone_name` is a domain you already host on cloudflare for DNS, and `pattern` is the subdomain you've chosen (if different).
-
-#### Removing nodejs_compat (recommended)
-
-The `nodejs_compat` flag is not required for this worker since it uses the native Web Crypto API instead of Node.js polyfills. The flag is included in the sample configuration for users who may want to extend the worker with other Node.js APIs.
-
-For improved security, you can remove the `nodejs_compat` flag entirely to avoid Node.js polyfill vulnerabilities:
-
-```diff
-name = "decap-proxy"
-main = "src/index.ts"
-compatibility_date = "2024-04-19"
--compatibility_flags = ["nodejs_compat"]
-```
 
 Disabling `workers_dev` is how you disable the default workers.dev preview domain, if that's something you want.
 
