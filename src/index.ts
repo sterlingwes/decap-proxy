@@ -1,9 +1,16 @@
-import { randomBytes } from 'node:crypto';
 import { OAuthClient } from './oauth';
 
 interface Env {
 	GITHUB_OAUTH_ID: string;
 	GITHUB_OAUTH_SECRET: string;
+}
+
+function randomHex(bytes: number): string {
+	const buf = new Uint8Array(bytes);
+	crypto.getRandomValues(buf);
+	return Array.from(buf)
+		.map((b) => b.toString(16).padStart(2, '0'))
+		.join('');
 }
 
 const createOAuth = (env: Env) => {
@@ -28,7 +35,7 @@ const handleAuth = async (url: URL, env: Env) => {
 	const authorizationUri = oauth2.authorizeURL({
 		redirect_uri: `https://${url.hostname}/callback?provider=github`,
 		scope: 'public_repo,user',
-		state: randomBytes(4).toString('hex'),
+		state: randomHex(4), // 4 bytes -> 8 hex chars
 	});
 
 	return new Response(null, { headers: { location: authorizationUri }, status: 301 });
@@ -39,20 +46,20 @@ const callbackScriptResponse = (status: string, token: string) => {
 		`
 <html>
 <head>
-	<script>
-		const receiveMessage = (message) => {
-			window.opener.postMessage(
-				'authorization:github:${status}:${JSON.stringify({ token })}',
-				'*'
-			);
-			window.removeEventListener("message", receiveMessage, false);
-		}
-		window.addEventListener("message", receiveMessage, false);
-		window.opener.postMessage("authorizing:github", "*");
-	</script>
-	<body>
-		<p>Authorizing Decap...</p>
-	</body>
+  <script>
+    const receiveMessage = (message) => {
+      window.opener.postMessage(
+        'authorization:github:${status}:${JSON.stringify({ token })}',
+        '*'
+      );
+      window.removeEventListener("message", receiveMessage, false);
+    }
+    window.addEventListener("message", receiveMessage, false);
+    window.opener.postMessage("authorizing:github", "*");
+  </script>
+  <body>
+    <p>Authorizing Decap...</p>
+  </body>
 </head>
 </html>
 `,

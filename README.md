@@ -21,7 +21,7 @@ So, your code after the change should look like:
 const authorizationUri = oauth2.authorizeURL({
   redirect_uri: `https://${url.hostname}/callback?provider=github`,
   scope: 'repo,user',
-  state: randomBytes(4).toString('hex'),
+  state: randomHex(4),
 });
 ```
 
@@ -46,6 +46,19 @@ compatibility_flags = ["nodejs_compat"]
 ```
 
 Where `zone_name` is a domain you already host on cloudflare for DNS, and `pattern` is the subdomain you've chosen (if different).
+
+#### Removing nodejs_compat (recommended)
+
+The `nodejs_compat` flag is not required for this worker since it uses the native Web Crypto API instead of Node.js polyfills. The flag is included in the sample configuration for users who may want to extend the worker with other Node.js APIs.
+
+For improved security, you can remove the `nodejs_compat` flag entirely to avoid Node.js polyfill vulnerabilities:
+
+```diff
+name = "decap-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-04-19"
+-compatibility_flags = ["nodejs_compat"]
+```
 
 Disabling `workers_dev` is how you disable the default workers.dev preview domain, if that's something you want.
 
