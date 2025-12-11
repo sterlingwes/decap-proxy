@@ -26,20 +26,16 @@ describe('GET /auth', () => {
 	});
 });
 
-// TODO: figure out how to mock outbound fetch
-// commented on prior issue: https://github.com/cloudflare/miniflare/issues/609#issuecomment-2079988386
+describe('GET /callback', () => {
+	it('responds with html page w/ JS messaging script', async () => {
+		fetchMock
+			.get('https://github.com')
+			.intercept({ path: '/login/oauth/access_token', method: 'POST' })
+			.reply(200, JSON.stringify({ access_token: 'some-access-token' }));
 
-// describe('GET /callback', () => {
-// 	it('responds with html page w/ JS messaging script', async () => {
-// 		fetchMock
-// 			.get('https://example.com')
-// 			.intercept({ path: '/login/oauth/access_token' })
-// 			.reply(200, JSON.stringify({ access_token: 'some-access-token' }));
-
-// 		const response = await SELF.fetch('https://example.com/callback?provider=github&code=some-authorization-code');
-// 		expect(response.status).toBe(200);
-// 		expect(await response.text()).toEqual(
-// 			expect.stringContaining('window.opener.postMessage("authorization:github:success:{"token":"some-access-token"}","*")')
-// 		);
-// 	});
-// });
+		const response = await SELF.fetch('https://example.com/callback?provider=github&code=some-authorization-code');
+		expect(response.status).toBe(200);
+		const responseBody = await response.text();
+		expect(responseBody).toEqual(expect.stringContaining('window.opener.postMessage("authorizing:github", "*");'));
+	});
+});
