@@ -16,6 +16,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Move sample wrangler.toml
-        run: mv wrangler.sample.toml wrangler.toml
+        run: mv wrangler.toml.sample wrangler.toml
       - name: Run tests
         run: yarn test
