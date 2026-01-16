@@ -34,7 +34,6 @@ const handleAuth = async (url: URL, env: Env) => {
 
   const repoIsPrivate = env.GITHUB_REPO_PRIVATE != undefined && env.GITHUB_REPO_PRIVATE !== '0';
   const repoScope = repoIsPrivate ? 'repo,user' : 'public_repo,user';
-  console.log(`repoScope is ${repoScope}`);
 
 	const oauth2 = createOAuth(env);
 	const authorizationUri = oauth2.authorizeURL({
