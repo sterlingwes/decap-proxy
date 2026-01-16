@@ -1,7 +1,24 @@
 #:schema node_modules/wrangler/config-schema.json
+
+# "compatibility_date" and "main" are values you are unlikely to need to change
+compatibility_date = "2025-11-17"     # schema version
+main = "src/index.ts"                 # entry point for the worker
+
+# The "name" parameter defines the name of the worker in your Cloudflare
+# Dashboard. It also specifies the first element of the default URL that
+# will reach your worker.
 name = "decap-proxy"
-main = "src/index.ts"
-compatibility_date = "2025-11-17"
+
+# optional: uncomment and alter the following lines if using a custom domain.
+#
+# route = { pattern = "decap.mydomain.com", zone_name = "mydomain.com", custom_domain = true }
+
+# optional: uncomment the following line if you don't want wrangler to set up
+#           the worker to be available at the default workers.dev url of
+#               <worker-name>.<account-name>.workers.dev
+#           where <worker-name> is the "name" parameter configured above.
+#
+# workers_dev = false
 
 # optional: this worker template uses Web Crypto API natively and doesn't require
 # nodejs_compat you can add this flag if you need Node.js polyfills,
@@ -13,8 +30,8 @@ compatibility_date = "2025-11-17"
 # - https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 # Note: Use secrets to store sensitive data.
 # - https://developers.cloudflare.com/workers/configuration/secrets/
-# [vars]
-# MY_VARIABLE = "production_value"
+[vars]
+GITHUB_REPO_PRIVATE = "0"             # Should be set to "1", if your website repo is private
 
 # Bind the Workers AI model catalog. Run machine learning models, powered by serverless GPUs, on Cloudflare’s global network
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#workers-ai
