@@ -6,7 +6,7 @@ A Cloudflare Worker Github OAuth proxy for [Decap CMS](https://github.com/decapo
 
 Suppose you have a website that is generated from some source files on GitHub and you want to provide an admin page where people who lack an understanding of git or HTML can edit the source files using a friendly browser-based interface. Decap CMS provides such an interface and can be configured to work with Github as the back-end, using Cloudflare to serve an [OAuth Proxy](https://decapcms.org/docs/backends-overview/#using-github-with-an-oauth-proxy) that will act as an authentication go-between.
 
-This repository provides the elements needed to deploy such an OAuth Proxy on a Cloudflare Worker node. The proxy will be deployed to its own subdomain, separate from whatever website domain you're using Decap with. That subdomain, which will be used to form the **PROXY URL**, below, will be used exclusively for hosting the OAuth Proxy. Either you will be using the `workers.dev` domain that Cloudflare automatically gives your workers, or you will be providing a custom subdomain (eg. `proxy.mydomain.com`) for a domain zone you own.
+This repository provides the elements needed to deploy such an OAuth Proxy on a Cloudflare Worker node. The proxy will be deployed to its own subdomain, separate from whatever website domain you're using Decap to manage. That subdomain will be referenced by the **PROXY URL**, below, and used exclusively for hosting the OAuth Proxy. Either you will be using the `workers.dev` domain that Cloudflare automatically gives your workers, or you will be providing a custom subdomain (eg. `proxy.mydomain.com`) for a domain zone you own.
 
 ```mermaid
 graph TD;
@@ -33,7 +33,7 @@ R-->Y;
 %% D<-->R;
 ```
 
-Decap CMS  assumes that you have some sort of CI/CD pipleine set up so that when commits are made to your github source, your website will be rebuilt, automatically. If you want to use a Cloudflare-based solution for that side of things, you could consider using Cloudflare Pages, or even Cloudflare Workers. Any such setups are not covered by this document, but it's recommended that you have that working before proceeding.
+Decap CMS  assumes that you have some sort of CI/CD pipeline set up so that when commits are made to your github source, your website will be rebuilt, automatically. If you want to use a Cloudflare-based solution for that side of things, you could consider using Cloudflare Pages, or even Cloudflare Workers. Any such setups are not covered by this document, but it's recommended that you have that working before proceeding.
 
 The basic steps for setting up the rest of the setup described above are:
 
@@ -65,7 +65,7 @@ In the future, when you want to revisit the OAuth App you have created here, you
 
 ## 2. Deploy the OAuth Proxy
 
-You will need some sort of working area where you will be cloning this decap-proxy repo, editing its contents, and being the launching pad for the deployment of the OAugh Proxy. This working area typically consists of a terminal on your local computer where you can run node packages using `npx` and you have a browser available (though the latter is optional).
+You will need some sort of working area where you will be cloning this decap-proxy repo, editing its contents, and performing the deployment of the OAuth Proxy. This working area typically consists of a terminal on your local computer where you can run node packages using `npx` and you have a browser available (though the latter is optional).
 
 Here's an overview of the steps needed to deploy the OAuth Proxy. 
 
@@ -83,7 +83,7 @@ Use whatever git tools you would normally use to clone this repository to your w
 
 ### 2.2 Prepare the wrangler.toml file
 
-The first step is to copy wrangler.toml.sample to wrangler.toml. For many people, this would mean running the following command in their terminal: `cp wrangler.toml.sample wrangler.toml`. You can look at the commented out directives in the resulting file and see if there are any unusual configuration of Cloudflare you wish to enact. But for most people, especially as they are getting started, you only need to consider the following four changes.
+The first step is to copy wrangler.toml.sample to wrangler.toml. For many people, this would mean running the following command in their terminal: `cp wrangler.toml.sample wrangler.toml`. You can look at the commented-out directives in the resulting file and see if there are any unusual configuration of Cloudflare you wish to enact. But for most people, especially when getting started, you only need to consider the following four changes.
 
 The *name* parameter at the top defines the name that your worker will be given in your Cloudflare dashboard, and will determine the first part of the default URL for the worker, if you don't disable that. You should change the name to something sensible for you.
 
@@ -100,7 +100,7 @@ Even with that change, the OAuth proxy will be available at the default workers.
 workers_dev = false
 ```
 
-Finally, if the github repository that holds the source to your web-site is a private repository, then you should change the declaration of the `GITHUB_REPO_PRIVATE` in wrangler.toml to set the value to 1.
+Finally, if the github repository that holds the source to your website is a private repository, then you should change the declaration of the `GITHUB_REPO_PRIVATE` in wrangler.toml to set the value to 1.
 
 ### 2.3 Establish Connection to Cloudflare
 
