@@ -3,6 +3,7 @@ import { OAuthClient } from './oauth';
 interface Env {
 	GITHUB_OAUTH_ID: string;
 	GITHUB_OAUTH_SECRET: string;
+  GITHUB_REPO_PRIVATE?: string;
 }
 
 function randomHex(bytes: number): string {
@@ -31,10 +32,13 @@ const handleAuth = async (url: URL, env: Env) => {
 		return new Response('Invalid provider', { status: 400 });
 	}
 
+  const repoIsPrivate = env.GITHUB_REPO_PRIVATE != undefined && env.GITHUB_REPO_PRIVATE !== '0';
+  const repoScope = repoIsPrivate ? 'repo,user' : 'public_repo,user';
+
 	const oauth2 = createOAuth(env);
 	const authorizationUri = oauth2.authorizeURL({
 		redirect_uri: `https://${url.hostname}/callback?provider=github`,
-		scope: 'public_repo,user',
+		scope: repoScope,
 		state: randomHex(4), // 4 bytes -> 8 hex chars
 	});
 
@@ -89,6 +93,7 @@ const handleCallback = async (url: URL, env: Env) => {
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
+    console.log(`url.pathname is ${url.pathname}`);
 		if (url.pathname === '/auth') {
 			return handleAuth(url, env);
 		}
