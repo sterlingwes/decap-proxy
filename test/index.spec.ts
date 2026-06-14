@@ -1,5 +1,5 @@
 // test/index.spec.ts
-import { exports } from 'cloudflare:workers';
+import { SELF } from 'cloudflare:test';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
 afterEach(() => {
@@ -8,14 +8,14 @@ afterEach(() => {
 
 describe('GET /', () => {
 	it('responds with no-op (Hello)', async () => {
-		const response = await exports.default.fetch('https://example.com');
+		const response = await SELF.fetch('https://example.com');
 		expect(await response.text()).toMatchInlineSnapshot(`"Hello 👋"`);
 	});
 });
 
 describe('GET /auth', () => {
 	it('responds with redirected location', async () => {
-		const response = await exports.default.fetch('https://example.com/auth?provider=github');
+		const response = await SELF.fetch('https://example.com/auth?provider=github');
 		expect(response.status).toBe(200);
 		expect(response.url).toEqual(
 			expect.stringContaining(
@@ -36,7 +36,7 @@ describe('GET /callback', () => {
 			)
 		);
 
-		const response = await exports.default.fetch(
+		const response = await SELF.fetch(
 			'https://example.com/callback?provider=github&code=some-authorization-code'
 		);
 		expect(response.status).toBe(200);
