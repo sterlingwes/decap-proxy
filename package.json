@@ -2,6 +2,7 @@
 	"name": "decap-proxy",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
@@ -11,7 +12,7 @@
 		"cf-typegen": "wrangler types"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.10.15",
+		"@cloudflare/vitest-pool-workers": "^0.16.15",
 		"typescript": "^5.9.3",
 		"vitest": "~4.1.0",
 		"wrangler": "^4.59.1"
